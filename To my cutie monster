@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>A Little Surprise</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background:
+        radial-gradient(circle at top, #172554, #050816 55%, #02030a);
+    color: white;
+    overflow-x: hidden;
+}
+
+.screen {
+    min-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.content {
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+}
+
+h1 {
+    font-size: clamp(2.2rem, 8vw, 4.5rem);
+    margin-bottom: 18px;
+}
+
+h2 {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    margin-bottom: 18px;
+}
+
+p {
+    color: #cbd5e1;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+button {
+    margin-top: 28px;
+    padding: 13px 28px;
+    border: 1px solid #38bdf8;
+    border-radius: 30px;
+    background: rgba(14, 165, 233, 0.12);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+button:hover {
+    background: #0ea5e9;
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(56,189,248,0.45);
+}
+
+/* WELCOME */
+
+.welcome-small {
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #67e8f9;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+}
+
+.glow {
+    color: #67e8f9;
+    text-shadow:
+        0 0 10px rgba(103,232,249,0.8),
+        0 0 30px rgba(59,130,246,0.5);
+}
+
+/* BIRTHDAY */
+
+#birthdayScreen {
+    background:
+        radial-gradient(circle at center, #172554, #020617 65%);
+}
+
+.birthday-title {
+    animation: pop 1s ease;
+}
+
+.balloon {
+    position: fixed;
+    bottom: -120px;
+    font-size: 3rem;
+    animation: floatUp 6s linear forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    to {
+        transform: translateY(-120vh);
+        opacity: 0;
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ENVELOPE */
+
+.envelope-area {
+    width: 280px;
+    height: 190px;
+    margin: 35px auto;
+    position: relative;
+    cursor: pointer;
+    perspective: 800px;
+}
+
+.envelope {
+    position: absolute;
+    inset: 0;
+    background: #111827;
+    border: 1px solid #38bdf8;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(56,189,248,0.2);
+}
+
+.envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 140px solid transparent;
+    border-right: 140px solid transparent;
+    border-top: 100px solid #1e293b;
+    transform-origin: top;
+    transition: 0.7s;
+}
+
+.envelope.open::before {
+    transform: rotateX(180deg);
+}
+
+.envelope-text {
+    position: absolute;
+    width: 100%;
+    top: 75px;
+    z-index: 2;
+    color: #67e8f9;
+    letter-spacing: 2px;
+}
+
+/* LETTER */
+
+.letter {
+    text-align: left;
+    background: rgba(15,23,42,0.85);
+    border: 1px solid rgba(103,232,249,0.35);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 0 35px rgba(59,130,246,0.15);
+}
+
+.letter p {
+    margin-bottom: 15px;
+}
+
+.signature {
+    margin-top: 25px;
+    color: #67e8f9;
+    text-align: right;
+}
+
+/* CAKE */
+
+.cake {
+    width: 260px;
+    margin: 60px auto 30px;
+    position: relative;
+}
+
+.cake-top {
+    height: 65px;
+    background: #334155;
+    border: 2px solid #67e8f9;
+    border-radius: 15px 15px 8px 8px;
+}
+
+.cake-bottom {
+    height: 70px;
+    background: #1e293b;
+    border: 2px solid #38bdf8;
+    border-radius: 8px 8px 15px 15px;
+}
+
+.candle-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    position: absolute;
+    top: -80px;
+    width: 100%;
+}
+
+.candle {
+    width: 35px;
+    height: 70px;
+    background: linear-gradient(#a78bfa, #38bdf8);
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.flame {
+    position: absolute;
+    width: 18px;
+    height: 28px;
+    background: #facc15;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    top: -28px;
+    box-shadow: 0 0 20px #facc15;
+    transition: 0.3s;
+}
+
+.flame.off {
+    opacity: 0;
+    transform: scale(0);
+}
+
+#countdown {
+    font-size: 3rem;
+    color: #67e8f9;
+    min-height: 55px;
+}
+
+/* PHOTOS */
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.photo {
+    aspect-ratio: 1;
+    border: 1px dashed #38bdf8;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    background: rgba(15,23,42,0.7);
+}
+
+/* TIMELINE */
+
+.timeline {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.timeline-item {
+    padding: 18px;
+    margin: 15px 0;
+    border-left: 2px solid #38bdf8;
+    background: rgba(15,23,42,0.7);
+    border-radius: 0 12px 12px 0;
+}
+
+.timeline-time {
+    color: #67e8f9;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* FINAL */
+
+.final-title {
+    color: #67e8f9;
+    text-shadow: 0 0 25px rgba(56,189,248,0.6);
+}
+
+.final-message {
+    margin-top: 25px;
+    font-size: 1.1rem;
+}
+
+.confetti {
+    position: fixed;
+    top: -30px;
+    font-size: 1.5rem;
+    animation: confettiFall 4s linear forwards;
+    pointer-events: none;
+    z-index: 100;
+}
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .letter {
+        padding: 20px;
+    }
+
+    .envelope-area {
+        width: 250px;
+        height: 170px;
+    }
+
+    .photo-grid {
+        gap: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- WELCOME -->
+
+<section id="welcomeScreen" class="screen active">
+    <div class="content">
+
+        <div class="welcome-small">
+            classified transmission
+        </div>
+
+        <h1>
+            Hey, you.
+        </h1>
+
+        <p>
+            You weren't supposed to find this yet.
+        </p>
+
+        <p>
+            But since you're already here...
+        </p>
+
+        <button onclick="showBirthday()">
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- BIRTHDAY -->
+
+<section id="birthdayScreen" class="screen">
+    <div class="content">
+
+        <div class="welcome-small">
+            transmission unlocked
+        </div>
+
+        <h1 class="birthday-title glow">
+            HAPPY BIRTHDAY
+        </h1>
+
+        <h2>
+            Tiny Monster.
+        </h2>
+
+        <p>
+            Yep. This entire little corner of the internet
+            exists because today is your day.
+        </p>
+
+        <button onclick="showEnvelope()">
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- ENVELOPE -->
+
+<section id="envelopeScreen" class="screen">
+    <div class="content">
+
+        <h2>There's something here.</h2>
+
+        <p>
+            Tap the envelope first.
+        </p>
+
+        <div class="envelope-area" onclick="openEnvelope()">
+
+            <div class="envelope">
+
+                <div class="envelope-text">
+                    OPEN ME
+                </div>
+
+            </div>
+
+        </div>
+
+        <button onclick="showLetter()">
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- LETTER -->
+
+<section id="letterScreen" class="screen">
+    <div class="content">
+
+        <h2>A small letter.</h2>
+
+        <div class="letter">
+
+            <p>
+                Okay, I don't really know how to make this
+                sound extremely fancy, so I'm just going to say it.
+            </p>
+
+            <p>
+                I hope this year brings you a lot of good
+                moments, random laughs, peaceful days and
+                things that make you genuinely happy.
+            </p>
+
+            <p>
+                And yes, you are officially required to enjoy
+                your birthday today.
+            </p>
+
+            <p>
+                No negotiations.
+            </p>
+
+            <div class="signature">
+                — from someone who planned all this
+            </div>
+
+        </div>
+
+        <button onclick="showCake()">
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- CAKE -->
+
+<section id="cakeScreen" class="screen">
+    <div class="content">
+
+        <h2>
+            Make a wish.
+        </h2>
+
+        <div class="cake">
+
+            <div class="candle-row">
+
+                <div class="candle">
+                    1
+                    <div class="flame"></div>
+                </div>
+
+                <div class="candle">
+                    8
+                    <div class="flame"></div>
+                </div>
+
+            </div>
+
+            <div class="cake-top"></div>
+            <div class="cake-bottom"></div>
+
+        </div>
+
+        <div id="countdown"></div>
+
+        <button id="blowButton" onclick="startCountdown()">
+            Blow out the candles
+        </button>
+
+        <button
+            id="cakeNext"
+            onclick="showPhotos()"
+            style="display:none;"
+        >
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- PHOTOS -->
+
+<section id="photosScreen" class="screen">
+    <div class="content">
+
+        <h2>
+            A few memories.
+        </h2>
+
+        <p>
+            Replace these boxes with your own photos later.
+        </p>
+
+        <div class="photo-grid">
+
+            <div class="photo">
+                PHOTO 01
+            </div>
+
+            <div class="photo">
+                PHOTO 02
+            </div>
+
+            <div class="photo">
+                PHOTO 03
+            </div>
+
+            <div class="photo">
+                PHOTO 04
+            </div>
+
+        </div>
+
+        <button onclick="showTimeline()">
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- TIMELINE -->
+
+<section id="timelineScreen" class="screen">
+    <div class="content">
+
+        <div class="welcome-small">
+            birthday schedule
+        </div>
+
+        <h2>
+            Today's Mission
+        </h2>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <div class="timeline-time">
+                    09:00 AM
+                </div>
+
+                Wake up and realise it's officially your day.
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">
+                    12:00 PM
+                </div>
+
+                Eat something good. This is not optional.
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">
+                    05:00 PM
+                </div>
+
+                Birthday mode: fully activated.
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">
+                    11:59 PM
+                </div>
+
+                Final reminder: you survived another year.
+            </div>
+
+        </div>
+
+        <button onclick="showFinal()">
+            Next
+        </button>
+
+    </div>
+</section>
+
+
+<!-- FINAL -->
+
+<section id="finalScreen" class="screen">
+    <div class="content">
+
+        <div class="welcome-small">
+            end of transmission
+        </div>
+
+        <h1 class="final-title">
+            Happy Birthday.
+        </h1>
+
+        <p class="final-message">
+            I hope you have an amazing day,
+            an even better year,
+            and plenty of reasons to smile.
+        </p>
+
+        <p style="margin-top:20px;">
+            And yes...
+            this whole website was made just for you.
+        </p>
+
+        <p style="margin-top:30px; color:#67e8f9;">
+            ✦ END OF SURPRISE ✦
+        </p>
+
+    </div>
+</section>
+
+
+<script>
+
+function showScreen(id) {
+
+    document.querySelectorAll(".screen").forEach(function(screen) {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+    window.scrollTo(0, 0);
+}
+
+
+function showBirthday() {
+
+    showScreen("birthdayScreen");
+
+    birthdayEffects();
+}
+
+
+function showEnvelope() {
+
+    showScreen("envelopeScreen");
+
+}
+
+
+function openEnvelope() {
+
+    document
+        .querySelector(".envelope-area")
+        .classList.add("open");
+
+}
+
+
+function showLetter() {
+
+    showScreen("letterScreen");
+
+}
+
+
+function showCake() {
+
+    showScreen("cakeScreen");
+
+}
+
+
+function startCountdown() {
+
+    document.getElementById("blowButton").style.display = "none";
+
+    let number = 3;
+
+    const countdown =
+        document.getElementById("countdown");
+
+    countdown.textContent = number;
+
+    const timer = setInterval(function() {
+
+        number--;
+
+        if (number > 0) {
+
+            countdown.textContent = number;
+
+        } else {
+
+            clearInterval(timer);
+
+            countdown.textContent = "✨";
+
+            document
+                .querySelectorAll(".flame")
+                .forEach(function(flame) {
+
+                    flame.classList.add("off");
+
+                });
+
+            birthdayEffects();
+
+            document.getElementById("cakeNext")
+                .style.display = "inline-block";
+        }
+
+    }, 1000);
+}
+
+
+function showPhotos() {
+
+    showScreen("photosScreen");
+
+}
+
+
+function showTimeline() {
+
+    showScreen("timelineScreen");
+
+}
+
+
+function showFinal() {
+
+    showScreen("finalScreen");
+
+    birthdayEffects();
+
+}
+
+
+function birthdayEffects() {
+
+    const symbols = ["🎈", "✨", "🎉", "💙", "💜"];
+
+    for (let i = 0; i < 25; i++) {
+
+        const balloon =
+            document.createElement("div");
+
+        balloon.className = "balloon";
+
+        balloon.textContent =
+            symbols[Math.floor(Math.random() * symbols.length)];
+
+        balloon.style.left =
+            Math.random() * 100 + "vw";
+
+        balloon.style.animationDelay =
+            Math.random() * 2 + "s";
+
+        document.body.appendChild(balloon);
+
+        setTimeout(function() {
+
+            balloon.remove();
+
+        }, 7000);
+    }
+}
+
+</script>
+
+</body>
+</html>
